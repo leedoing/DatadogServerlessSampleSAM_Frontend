@@ -1,71 +1,40 @@
-# Getting Started with Create React App
+# Serverless Sample SAM with Datadog.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple voting service built on a Serverless Architecture using AWS SAM. It features [Datadog's Serverless monitoring](https://docs.datadoghq.com/serverless/). The backend consists of Lambda, API Gateway, SQS, and DynamoDB, all used in conjunction. It's built with a combination of Python and Node, making it a multi-language application. All major features of Datadog Lambda monitoring are enabled.
 
-## Available Scripts
+## Architecture
 
-In the project directory, you can run:
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbwPYVu%2FbtsacgylnCk%2F6sYxokqPW2RpQxVDmzWzqK%2Fimg.png" style="width:100%; height:100%"/>
 
-### `npm start`
+## Pages
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FptnsN%2Fbtr93lHBVfy%2FKTcWZHlSpkkvLm8QKURAfK%2Fimg.png" style="width:35%; height:35%"/>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdfKxYj%2Fbtr91yt61S5%2Fx0HsnMNH9oU7o1I15IXPL1%2Fimg.png" style="width:35%; height:35%"/>
 
-### `npm test`
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FnndhH%2FbtsaceHi5z3%2FkWzBc82NU7Fl1R1v1vc6EK%2Fimg.png" style="width:35%; height:35%"/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## URL
 
-### `npm run build`
+[https://datadoghq.net](https://datadoghq.net)
+[https://datadoghq.net/en](https://datadoghq.net/en)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Create a SAM
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```sh
+## In order to use AWS SAM, it needs to be installed first. (https://docs.aws.amazon.com/ko_kr/serverless-application-model/latest/developerguide/serverless-getting-started.html)
+# git clone
+git clone https://github.com/leedoing/DatadogServerlessSampleSAM.git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Create SAM Datadog stack
+aws cloudformation create-stack \
+  --stack-name datadog-serverless-macro \
+  --template-url https://datadog-cloudformation-template.s3.amazonaws.com/aws/serverless-macro/latest.yml \
+  --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
 
-### `npm run eject`
+# Deploy SAM
+sam deploy --guided
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# Datadog-Serverless-Survey-SampleApp
+---
+```
