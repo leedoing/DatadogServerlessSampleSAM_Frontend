@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { postSurveyApi, getWinApi } from "./api";
-
-function tenPercentChance() {
-  return Math.random() < 1;
-}
+import Loading from "./Loading";
+import { datadogRum } from "@datadog/browser-rum";
 
 class DatadogSurvey extends Component {
   constructor(props) {
@@ -18,6 +16,7 @@ class DatadogSurvey extends Component {
       },
       isSubmitted: false,
       win: false,
+      loading: false,
     };
 
     this.datadogNameSubmit = this.datadogNameSubmit.bind(this);
@@ -28,42 +27,54 @@ class DatadogSurvey extends Component {
   datadogNameSubmit(event) {
     event.preventDefault();
     let name = this.refs.name.value;
-    this.setState(
-      {
-        userName: name,
-      },
-      function () {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      userName: name,
+    });
+    datadogRum.setUser({
+      name: name,
+    });
   }
 
-  surveySubmit(event) {
+  async surveySubmit(event) {
     event.preventDefault();
     let win = false;
-    getWinApi.getWin().then((response) => {
-      console.log(response.data);
-      win = response.data;
-      this.setState({
-        isSubmitted: true,
-        win: win,
-      });
+    this.setState({
+      loading: true,
     });
-    // this.setState({
-    //   isSubmitted: true,
-    //   win: win,
-    // });
-    let body = {
-      vote_name: this.state.answers,
-    };
-    postSurveyApi
-      .postSurvey(body)
-      .then((response) => {
+    try {
+      await getWinApi.getWin().then((response) => {
         console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
+        win = response.data;
+        this.setState({
+          isSubmitted: true,
+          win: win,
+        });
       });
+      let body = {
+        vote_name: this.state.answers,
+      };
+      postSurveyApi
+        .postSurvey(body)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      datadogRum.addRumGlobalContext("global_context", {
+        info: this.state,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTimeout(
+        () =>
+          this.setState({
+            loading: false,
+          }),
+        2000
+      );
+    }
   }
 
   answerSelected(event) {
@@ -75,21 +86,18 @@ class DatadogSurvey extends Component {
     } else if (event.target.name == "ans3") {
       answers.ans3 = event.target.value;
     }
-    this.setState({ answers: answers }, function () {
-      console.log(this.state);
-    });
+    this.setState({ answers: answers });
   }
 
   render() {
     let name = "";
     let questions = "";
-
     if (this.state.userName === "" && this.state.isSubmitted === false) {
-      console.log(this.state.userName);
       name = (
-        <div>
+        <div style={{ height: "90vh" }}>
           {" "}
-          <h2 style={{ paddingTop: "15%" }}>Datadog Serverless Session</h2>
+          <br />
+          <h2 style={{}}>Datadog Serverless Session</h2>
           <h3>간단한 설문에 참여해주시면,</h3>
           <h3>추첨을 통해 커피 쿠폰을 드립니다.</h3>
           <form onSubmit={this.datadogNameSubmit}>
@@ -99,6 +107,12 @@ class DatadogSurvey extends Component {
               placeholder="닉네임을 적어주세요 :)"
               ref="name"
             />
+            <input
+              className="feedback-button"
+              type="submit"
+              value="submit"
+              style={{ marginTop: "5vh", marginBottom: "1vh" }}
+            ></input>
           </form>
           <br />
           <br />
@@ -109,7 +123,6 @@ class DatadogSurvey extends Component {
         </div>
       );
     } else if (this.state.userName !== "" && this.state.isSubmitted === false) {
-      //   console.log(this.state.userName);
       name = (
         <div>
           <h2>Welcome! {this.state.userName} </h2>
@@ -117,7 +130,7 @@ class DatadogSurvey extends Component {
       );
       questions = (
         <div>
-          <h3>3개의 질문입니다.</h3>
+          <h3>3개 질문입니다.</h3>
           <form onSubmit={this.surveySubmit}>
             <div className="card">
               <label>1) 직무가 무엇인가요?</label> <br />
@@ -249,7 +262,7 @@ class DatadogSurvey extends Component {
     } else if (this.state.isSubmitted === true && this.state.win === false) {
       name = (
         <div>
-          <h2 style={{ paddingTop: "15%" }}>
+          <h3 style={{ paddingTop: "15%" }}>
             {this.state.userName}님 <br />
             설문 조사 감사합니다! <br />
             아쉽게도 당첨되지 않았습니다. <br />
@@ -258,7 +271,7 @@ class DatadogSurvey extends Component {
             아이폰, 아이패드 등 <br />
             다양한 경품 이벤트가 <br />
             준비되어 있습니다! <br />
-          </h2>
+          </h3>
           <br />
           <br />
           <br />
@@ -267,13 +280,16 @@ class DatadogSurvey extends Component {
         </div>
       );
     }
-
-    return (
-      <div>
-        {name}
-        {questions}
-      </div>
-    );
+    if (this.state.loading) {
+      return <Loading />;
+    } else {
+      return (
+        <div>
+          {name}
+          {questions}
+        </div>
+      );
+    }
   }
 }
 

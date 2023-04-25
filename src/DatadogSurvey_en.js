@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { postSurveyApi, getWinApi } from "./api";
-
-function tenPercentChance() {
-  return Math.random() < 1;
-}
+import Loading from "./Loading";
 
 class DatadogSurvey extends Component {
   constructor(props) {
@@ -18,6 +15,7 @@ class DatadogSurvey extends Component {
       },
       isSubmitted: false,
       win: false,
+      loading: false,
     };
 
     this.datadogNameSubmit = this.datadogNameSubmit.bind(this);
@@ -38,32 +36,45 @@ class DatadogSurvey extends Component {
     );
   }
 
-  surveySubmit(event) {
+  async surveySubmit(event) {
+    console.log("post");
     event.preventDefault();
     let win = false;
-    getWinApi.getWin().then((response) => {
-      console.log(response.data);
-      win = response.data;
-      this.setState({
-        isSubmitted: true,
-        win: win,
-      });
+    this.setState({
+      loading: true,
     });
-    // this.setState({
-    //   isSubmitted: true,
-    //   win: win,
-    // });
-    let body = {
-      vote_name: this.state.answers,
-    };
-    postSurveyApi
-      .postSurvey(body)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
+    console.log(this.state.loading);
+    try {
+      await getWinApi.getWin().then((response) => {
+        console.log(response.data);
+        win = response.data;
+        this.setState({
+          isSubmitted: true,
+          win: win,
+        });
       });
+      let body = {
+        vote_name: this.state.answers,
+      };
+      postSurveyApi
+        .postSurvey(body)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTimeout(
+        () =>
+          this.setState({
+            loading: false,
+          }),
+        2000
+      );
+    }
   }
 
   answerSelected(event) {
@@ -83,13 +94,14 @@ class DatadogSurvey extends Component {
   render() {
     let name = "";
     let questions = "";
-
+    let loading = this.state.loading;
     if (this.state.userName === "" && this.state.isSubmitted === false) {
       console.log(this.state.userName);
       name = (
-        <div>
+        <div style={{ height: "90vh" }}>
           {" "}
-          <h2 style={{ paddingTop: "15%" }}>Datadog Serverless Session</h2>
+          <br />
+          <h2 style={{}}>Datadog Serverless Session</h2>
           <h3>Take the survey,</h3>
           <h3>for a chance to win a coffee coupon.</h3>
           <form onSubmit={this.datadogNameSubmit}>
@@ -99,6 +111,12 @@ class DatadogSurvey extends Component {
               placeholder="Enter nickname :)"
               ref="name"
             />
+            <input
+              className="feedback-button"
+              type="submit"
+              value="submit"
+              style={{ marginTop: "5vh", marginBottom: "1vh" }}
+            ></input>
           </form>
           <br />
           <br />
@@ -248,27 +266,32 @@ class DatadogSurvey extends Component {
     } else if (this.state.isSubmitted === true && this.state.win === false) {
       name = (
         <div>
-          <h2 style={{ paddingTop: "15%" }}>
+          <h3 style={{ paddingTop: "15%" }}>
             {this.state.userName} <br />
             Thank you for taking the survey! <br />
             Unfortunately, you were not selected as a winner. <br />
             <br />
             However, if you come to the Datadog booth, you will have the chance
             to win various prizes such as iPhones and iPads! <br />
-          </h2>
+          </h3>
+          <br />
+          <br />
           <br />
           <br />
           <img src="./datadog.png" style={{ borderRadius: 10 }} />
         </div>
       );
     }
-
-    return (
-      <div>
-        {name}
-        {questions}
-      </div>
-    );
+    if (this.state.loading) {
+      return <Loading />;
+    } else {
+      return (
+        <div>
+          {name}
+          {questions}
+        </div>
+      );
+    }
   }
 }
 

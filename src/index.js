@@ -4,12 +4,23 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { datadogRum } from "@datadog/browser-rum";
+import { datadogLogs } from "@datadog/browser-logs";
+
+datadogLogs.init({
+  clientToken: "pub350c3d32dc186cadf0fe877fd14e3f1e",
+  site: "datadoghq.com",
+  forwardErrorsToLogs: true,
+  sessionSampleRate: 100,
+  service: "hyunjin-datadog-sam-vote-app-front",
+  env: "dev",
+  forwardConsoleLogs: "all",
+});
 
 datadogRum.init({
   applicationId: "6be1a363-c45d-4956-875a-ce5c741e91e4",
   clientToken: "pub350c3d32dc186cadf0fe877fd14e3f1e",
   site: "datadoghq.com",
-  service: "voting-serverless",
+  service: "hyunjin-datadog-sam-vote-app-front",
   env: "dev",
   version: "1.0.0",
   sampleRate: 100,
@@ -18,19 +29,26 @@ datadogRum.init({
   trackResources: true,
   trackLongTasks: true,
   defaultPrivacyLevel: "allow",
-  // allowedTracingUrls: [
-  //   "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
-  // ],
-  // allowedTracingUrls: ["https://api.example.com", /https:\/\/.*\.my-api-domain\.com/, (url) => url.startsWith("https://api.example.com")]
+  allowedTracingUrls: [
+    "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
+  ],
+  beforeSend: (event, context) => {
+    if (event.type === "resource" && event.resource.type === "xhr") {
+      event.context = {
+        ...event.context,
+        responseBody: context.xhr.response,
+      };
+    }
+  },
 });
 
 datadogRum.startSessionReplayRecording();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  <>
     <App />
-  </React.StrictMode>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
