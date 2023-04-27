@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -25,42 +25,36 @@ datadogRum.init({
   version: "1.0.0",
   sampleRate: 100,
   sessionReplaySampleRate: 100,
-  trackInteractions: true,
   trackResources: true,
+  trackUserInteractions: true,
+  trackFrustrations: true,
   trackLongTasks: true,
   defaultPrivacyLevel: "allow",
   allowedTracingUrls: [
     "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
-    if (event.type === "view") {
-      if (
-        event._dd.document_version === 1 ||
-        event._dd.document_version === 2
-      ) {
-        event.view.url = "/main";
-      } else if ("global_context" in event.context) {
-        event.view.url = "/result";
-      } else if ("usr" in event) {
-        event.view.url = "/survey";
-      } else {
-        event.view.url = "/main";
-      }
+    if ("global_context" in event.context) {
+      event.view.url = "/result";
+    } else if ("usr" in event) {
+      event.view.url = "/survey";
+    } else {
+      event.view.url = "/main";
     }
-    console.log(event.context);
     if (event.type === "resource" && event.resource.type === "xhr") {
       event.context = {
         ...event.context,
         responseBody: context.xhr.response,
       };
     }
+    console.log(context);
+    console.log(event);
   },
 });
 
 datadogRum.startSessionReplayRecording();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-datadogRum.clearGlobalContext();
 root.render(
   <>
     <App />
