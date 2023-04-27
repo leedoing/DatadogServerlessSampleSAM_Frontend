@@ -110,12 +110,18 @@ class DatadogSurvey extends Component {
               type="text"
               placeholder="Enter nickname :)"
               ref="name"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
             />
             <input
               className="feedback-button"
               type="submit"
               value="submit"
               style={{ marginTop: "5vh", marginBottom: "1vh" }}
+              data-dd-action-name="nickname-submit"
             ></input>
           </form>
           <br />
@@ -237,6 +243,7 @@ class DatadogSurvey extends Component {
               className="feedback-button"
               type="submit"
               value="submit"
+              data-dd-action-name="survey-submit"
               style={{ marginBottom: "1vh" }}
             ></input>
           </form>

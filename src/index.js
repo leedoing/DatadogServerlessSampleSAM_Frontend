@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -33,6 +33,21 @@ datadogRum.init({
     "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
+    if (event.type === "view") {
+      if (
+        event._dd.document_version === 1 ||
+        event._dd.document_version === 2
+      ) {
+        event.view.url = "/main";
+      } else if ("global_context" in event.context) {
+        event.view.url = "/result";
+      } else if ("usr" in event) {
+        event.view.url = "/survey";
+      } else {
+        event.view.url = "/main";
+      }
+    }
+    console.log(event.view.url);
     if (event.type === "resource" && event.resource.type === "xhr") {
       event.context = {
         ...event.context,
@@ -45,6 +60,7 @@ datadogRum.init({
 datadogRum.startSessionReplayRecording();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+datadogRum.clearGlobalContext();
 root.render(
   <>
     <App />

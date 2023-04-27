@@ -79,11 +79,11 @@ class DatadogSurvey extends Component {
 
   answerSelected(event) {
     let answers = this.state.answers;
-    if (event.target.name == "ans1") {
+    if (event.target.name === "ans1") {
       answers.ans1 = event.target.value;
-    } else if (event.target.name == "ans2") {
+    } else if (event.target.name === "ans2") {
       answers.ans2 = event.target.value;
-    } else if (event.target.name == "ans3") {
+    } else if (event.target.name === "ans3") {
       answers.ans3 = event.target.value;
     }
     this.setState({ answers: answers });
@@ -106,12 +106,18 @@ class DatadogSurvey extends Component {
               type="text"
               placeholder="닉네임을 적어주세요 :)"
               ref="name"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
             />
             <input
               className="feedback-button"
               type="submit"
               value="submit"
               style={{ marginTop: "5vh", marginBottom: "1vh" }}
+              data-dd-action-name="nickname-submit"
             ></input>
           </form>
           <br />
@@ -131,7 +137,10 @@ class DatadogSurvey extends Component {
       questions = (
         <div>
           <h3>3개 질문입니다.</h3>
-          <form onSubmit={this.surveySubmit}>
+          <form
+            onSubmit={this.surveySubmit}
+            data-dd-action-name="survey-submit"
+          >
             <div className="card">
               <label>1) 직무가 무엇인가요?</label> <br />
               <input
@@ -233,6 +242,7 @@ class DatadogSurvey extends Component {
               className="feedback-button"
               type="submit"
               value="submit"
+              data-dd-action-name="survey-submit"
               style={{ marginBottom: "1vh" }}
             ></input>
           </form>
