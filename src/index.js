@@ -48,7 +48,6 @@ datadogRum.init({
       };
     }
     console.log(context);
-    console.log(event);
   },
 });
 
