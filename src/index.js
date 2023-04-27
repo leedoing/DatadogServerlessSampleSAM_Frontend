@@ -47,7 +47,7 @@ datadogRum.init({
         event.view.url = "/main";
       }
     }
-    console.log(event.view.url);
+    console.log(event.context);
     if (event.type === "resource" && event.resource.type === "xhr") {
       event.context = {
         ...event.context,
