@@ -34,9 +34,7 @@ datadogRum.init({
     "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
-    if ("global_context" in event.context) {
-      event.view.url = "/result";
-    } else if ("usr" in event) {
+    if ("usr" in event) {
       event.view.url = "/survey";
     } else {
       event.view.url = "/main";
@@ -46,8 +44,9 @@ datadogRum.init({
         ...event.context,
         responseBody: context.xhr.response,
       };
+      console.log(event);
     }
-    console.log(context);
+    console.log(event.view.url);
   },
 });
 
