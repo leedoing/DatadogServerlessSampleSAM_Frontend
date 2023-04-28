@@ -54,6 +54,15 @@ class DatadogSurvey extends Component {
           isSubmitted: true,
           win: win,
         });
+        if (win === true) {
+          datadogRum.setUser({
+            plan: "당첨",
+          });
+        } else {
+          datadogRum.setUser({
+            plan: "미당첨",
+          });
+        }
       });
       let body = {
         vote_name: this.state.answers,
@@ -81,11 +90,11 @@ class DatadogSurvey extends Component {
 
   answerSelected(event) {
     let answers = this.state.answers;
-    if (event.target.name == "ans1") {
+    if (event.target.name === "ans1") {
       answers.ans1 = event.target.value;
-    } else if (event.target.name == "ans2") {
+    } else if (event.target.name === "ans2") {
       answers.ans2 = event.target.value;
-    } else if (event.target.name == "ans3") {
+    } else if (event.target.name === "ans3") {
       answers.ans3 = event.target.value;
     }
     this.setState({ answers: answers }, function () {

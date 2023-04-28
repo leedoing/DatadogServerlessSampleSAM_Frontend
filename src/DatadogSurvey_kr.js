@@ -50,6 +50,15 @@ class DatadogSurvey extends Component {
           isSubmitted: true,
           win: win,
         });
+        if (win === true) {
+          datadogRum.setUser({
+            plan: "당첨",
+          });
+        } else {
+          datadogRum.setUser({
+            plan: "미당첨",
+          });
+        }
       });
       let body = {
         vote_name: this.state.answers,
