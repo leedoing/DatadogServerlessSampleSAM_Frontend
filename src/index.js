@@ -31,7 +31,7 @@ datadogRum.init({
   trackLongTasks: true,
   defaultPrivacyLevel: "allow",
   allowedTracingUrls: [
-    "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/",
+    "https://9kcfcjnh5j.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
     if ("usr" in event) {

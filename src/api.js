@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://58olzmgstl.execute-api.ap-northeast-2.amazonaws.com/dev/",
+  baseURL: "https://9kcfcjnh5j.execute-api.ap-northeast-2.amazonaws.com/dev/",
 });
 
 export const postSurveyApi = {
