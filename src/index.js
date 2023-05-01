@@ -33,11 +33,6 @@ datadogRum.init({
     "https://9kcfcjnh5j.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
-    if ("global_context" in event.context) {
-      event.view.url = "/survey";
-    } else {
-      event.view.url = "/main";
-    }
     if (event.type === "resource" && event.resource.type === "xhr") {
       event.context = {
         ...event.context,
