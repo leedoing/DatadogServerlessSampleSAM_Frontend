@@ -25,14 +25,11 @@ class DatadogSurvey extends Component {
     this.answerSelected = this.answerSelected.bind(this);
   }
 
-  datadogNameSubmit(event) {
+  async datadogNameSubmit(event) {
     event.preventDefault();
     let name = this.refs.name.value;
     this.setState({
       userName: name,
-    });
-    datadogRum.setUser({
-      name: name,
     });
   }
 
@@ -50,20 +47,11 @@ class DatadogSurvey extends Component {
           isSubmitted: true,
           win: win,
         });
-        if (win === true) {
-          datadogRum.setUser({
-            plan: "당첨",
-          });
-        } else {
-          datadogRum.setUser({
-            plan: "미당첨",
-          });
-        }
       });
       let body = {
         vote_name: this.state.answers,
       };
-      postSurveyApi
+      await postSurveyApi
         .postSurvey(body)
         .then((response) => {
           console.log(response);
@@ -71,12 +59,16 @@ class DatadogSurvey extends Component {
         .catch((error) => {
           console.log(error);
         });
-      datadogRum.addRumGlobalContext("global_context", {
+      await datadogRum.addRumGlobalContext("global_context", {
         info: this.state,
       });
     } catch (err) {
       console.log(err);
     } finally {
+      await datadogRum.setUser({
+        name: this.state.userName,
+        win: this.state.win,
+      });
       setTimeout(
         () =>
           this.setState({

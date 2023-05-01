@@ -1,10 +1,9 @@
+import { datadogRum } from "@datadog/browser-rum";
+import { datadogLogs } from "@datadog/browser-logs";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { datadogRum } from "@datadog/browser-rum";
-import { datadogLogs } from "@datadog/browser-logs";
 
 datadogLogs.init({
   clientToken: "pub350c3d32dc186cadf0fe877fd14e3f1e",
@@ -34,7 +33,7 @@ datadogRum.init({
     "https://9kcfcjnh5j.execute-api.ap-northeast-2.amazonaws.com/",
   ],
   beforeSend: (event, context) => {
-    if ("usr" in event) {
+    if ("global_context" in event.context) {
       event.view.url = "/survey";
     } else {
       event.view.url = "/main";
@@ -46,7 +45,7 @@ datadogRum.init({
       };
       console.log(event);
     }
-    console.log(event.view.url);
+    // console.log(event.view.url);
   },
 });
 
@@ -62,4 +61,4 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// reportWebVitals();
