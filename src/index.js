@@ -25,8 +25,6 @@ datadogRum.init({
   sampleRate: 100,
   sessionReplaySampleRate: 100,
   trackResources: true,
-  trackUserInteractions: true,
-  trackFrustrations: true,
   trackLongTasks: true,
   defaultPrivacyLevel: "allow",
   allowedTracingUrls: [
