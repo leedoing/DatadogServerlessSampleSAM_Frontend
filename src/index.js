@@ -43,6 +43,7 @@ datadogRum.init({
         ...event.context,
         responseBody: context.xhr.response,
       };
+      console.log(event);
     }
   },
 });
