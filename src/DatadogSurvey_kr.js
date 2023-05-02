@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import { datadogRum } from "@datadog/browser-rum";
 import { postSurveyApi, getWinApi } from "./api";
 import Loading from "./Loading";
-import { datadogRum } from "@datadog/browser-rum";
 
 class DatadogSurvey extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class DatadogSurvey extends Component {
         });
       });
       let body = {
-        survey: this.state.answers,
+        vote_name: this.state.answers,
       };
       console.log(body);
       await postSurveyApi
@@ -223,7 +223,7 @@ class DatadogSurvey extends Component {
                 value="Datadog이 아닌 상용 솔루션을 사용"
                 onChange={this.answerSelected}
               />
-              {"Datadog이 아닌 상용 솔루션 사용"}
+              {"Datadog이 아닌 상용솔루션 사용"}
               <br />
               <input
                 type="radio"

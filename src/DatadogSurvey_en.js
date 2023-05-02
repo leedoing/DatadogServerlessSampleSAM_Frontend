@@ -65,7 +65,7 @@ class DatadogSurvey extends Component {
         }
       });
       let body = {
-        survey: this.state.answers,
+        vote_name: this.state.answers,
       };
       console.log(body);
       postSurveyApi
