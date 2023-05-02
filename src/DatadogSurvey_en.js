@@ -1,7 +1,7 @@
+import { datadogRum } from "@datadog/browser-rum";
 import React, { Component } from "react";
 import { postSurveyApi, getWinApi } from "./api";
 import Loading from "./Loading";
-import { datadogRum } from "@datadog/browser-rum";
 
 class DatadogSurvey extends Component {
   constructor(props) {
