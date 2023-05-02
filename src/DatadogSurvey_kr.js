@@ -236,7 +236,7 @@ class DatadogSurvey extends Component {
               <input
                 type="radio"
                 name="ans3"
-                value="Datadog을 사용"
+                value="Datadog 사용"
                 onChange={this.answerSelected}
               />
               {"Datadog 사용"}
